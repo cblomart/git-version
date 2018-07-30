@@ -6,3 +6,6 @@
 
 #ignore generated binary
 git-version
+
+#ignore generated file
+version.go
