@@ -1,5 +1,8 @@
 #ignore exe
 *.exe
 
+#ignore pdf
+*.pdf
+
 #ignore generated binary
 git-version
