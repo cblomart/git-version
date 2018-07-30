@@ -1,5 +1,7 @@
 package main
 
+//go:generate git-version
+
 import (
 	"log"
 	"os"
@@ -15,10 +17,10 @@ const (
 package main
 
 const(
-	gitCommit = "{{.Commit}}"
-	gitShortCommit = "{{.ShortCommit}}"
-	gitTag= "{{.Tag}}"
-	gitStatus = "{{.Status}}" 
+	gitCommit = "{{or .Commit "-"}}"
+	gitShortCommit = "{{or .ShortCommit "-"}}"
+	gitTag= "{{or .Tag "-"}}"
+	gitStatus = "{{or .Status "-"}}" 
 )
 `
 )
