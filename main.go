@@ -17,10 +17,10 @@ const (
 package main
 
 const(
-	gitCommit = "{{or .Commit "-"}}"
+	gitCommit      = "{{or .Commit "-"}}"
 	gitShortCommit = "{{or .ShortCommit "-"}}"
-	gitTag= "{{or .Tag "-"}}"
-	gitStatus = "{{or .Status "-"}}" 
+	gitTag         = "{{or .Tag "-"}}"
+	gitStatus      = "{{or .Status "-"}}" 
 )
 `
 )
