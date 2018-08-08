@@ -64,6 +64,8 @@ func main() {
 	tag, err := repo.TagObject(commit.Hash)
 	if err == nil {
 		infos.Tag = strings.Replace(tag.Name, "refs/tags/", "", 1)
+	} else {
+		log.Printf("Error getting tag: %s\n", err)
 	}
 	log.Printf("Tag: %s\n", infos.Tag)
 	// get status
