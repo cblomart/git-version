@@ -16,11 +16,12 @@ const (
 	versionTemplate string = `
 package main
 
-const(
-	gitCommit      = "{{or .Commit "-"}}"
-	gitShortCommit = "{{or .ShortCommit "-"}}"
-	gitTag         = "{{or .Tag "-"}}"
-	gitStatus      = "{{or .Status "-"}}" 
+const (
+	gitCommit      = "{{or .Commit "NA"}}"
+	gitShortCommit = "{{or .ShortCommit "NA"}}"
+	gitTag         = "{{or .Tag "NA"}}"
+	gitBranch      = "{{or .Branch "NA"}}"
+	gitStatus      = "{{or .Status "NA"}}" 
 )
 `
 )
@@ -30,6 +31,7 @@ type GitInfo struct {
 	Commit      string
 	ShortCommit string
 	Tag         string
+	Branch      string
 	Status      string
 }
 
