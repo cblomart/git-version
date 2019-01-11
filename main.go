@@ -13,8 +13,7 @@ import (
 
 const (
 	versionFilename string = "./version.go"
-	versionTemplate string = `
-package main
+	versionTemplate string = `package main
 
 const (
 	gitCommit      = "{{or .Commit "NA"}}"
