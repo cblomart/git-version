@@ -21,7 +21,7 @@ const (
 	gitShortCommit = "{{or .ShortCommit "NA"}}"
 	gitTag         = "{{or .Tag "NA"}}"
 	gitBranch      = "{{or .Branch "NA"}}"
-	gitStatus      = "{{or .Status "NA"}}" 
+	gitStatus      = "{{or .Status "NA"}}"
 )
 `
 )
