@@ -46,6 +46,14 @@ func main() {
 		log.Printf("Could not open git repository '%s'\n", path)
 		return
 	}
+	// get the branch
+	head, err := repo.Head()
+	if err != nil {
+		log.Println("Could not get head")
+		return
+	}
+	infos.Branch = strings.replace(head.Name() , "refs/heads/", "", 1)
+	log.Printf("Branch: %s\n", infos.Branch)
 	// get logs
 	logs, err := repo.Log(&git.LogOptions{})
 	if err != nil {
