@@ -52,7 +52,7 @@ func main() {
 		log.Println("Could not get head")
 		return
 	}
-	infos.Branch = strings.replace(head.Name() , "refs/heads/", "", 1)
+	infos.Branch = strings.Replace(head.Name() , "refs/heads/", "", 1)
 	log.Printf("Branch: %s\n", infos.Branch)
 	// get logs
 	logs, err := repo.Log(&git.LogOptions{})
