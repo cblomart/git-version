@@ -18,7 +18,8 @@ package main
 const(
         gitCommit = "e1ed2c7b8b1d1af5c4213c87f7fe3a8062a5eeb8"
         gitShortCommit = "e1ed2c7"
-        gitTag= "-"
+        gitTag = "NA"
+        gitBranch = "NA"
         gitStatus = "dirty"
 )
 ```
