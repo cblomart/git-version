@@ -93,6 +93,22 @@ func main() {
 		infos.Status = "dirty"
 	}
 	log.Printf("Status: %s\n", infos.Status)
+	// check values
+	if len(infos.Commit) == 0 {
+		infos.Commit = nil
+	}
+	if len(infos.ShortCommit) == 0 {
+		infos.ShortCommit = nil
+	}
+	if len(infos.Tag) == 0 {
+		infos.Tag = nil
+	}
+	if len(infos.Branch) == 0 {
+		infos.Branch = nil
+	}
+	if len(infos.Status) == 0 {
+		infos.Status = nil
+	}
 	// generate version.go file
 	t := template.New("version.go")
 	_, err = t.Parse(versionTemplate)
