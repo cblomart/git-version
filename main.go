@@ -16,11 +16,11 @@ const (
 	versionTemplate string = `package main
 
 const (
-	gitCommit      = "{{or .Commit "NA"}}"
-	gitShortCommit = "{{or .ShortCommit "NA"}}"
-	gitTag         = "{{or .Tag "NA"}}"
-	gitBranch      = "{{or .Branch "NA"}}"
-	gitStatus      = "{{or .Status "NA"}}"
+	gitCommit      = "{{if .Commit}}{{.Commit}}{{else}}NA{{end}}"
+	gitShortCommit = "{{if .ShortCommit}}{{.ShortCommit}}{{else}}NA{{end}}"
+	gitTag         = "{{if .Tag}}{{.Tag}}{{else}}NA{{end}}"
+	gitBranch      = "{{if .Branch}}{{.Branch}}{{else}}NA{{end}}"
+	gitStatus      = "{{if .Status}}{{.Status}}{{else}}NA{{end}}"
 )
 `
 )
@@ -93,22 +93,6 @@ func main() {
 		infos.Status = "dirty"
 	}
 	log.Printf("Status: %s\n", infos.Status)
-	// check values
-	if len(infos.Commit) == 0 {
-		infos.Commit = nil
-	}
-	if len(infos.ShortCommit) == 0 {
-		infos.ShortCommit = nil
-	}
-	if len(infos.Tag) == 0 {
-		infos.Tag = nil
-	}
-	if len(infos.Branch) == 0 {
-		infos.Branch = nil
-	}
-	if len(infos.Status) == 0 {
-		infos.Status = nil
-	}
 	// generate version.go file
 	t := template.New("version.go")
 	_, err = t.Parse(versionTemplate)
