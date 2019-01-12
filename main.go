@@ -13,7 +13,8 @@ import (
 
 const (
 	versionFilename string = "./version.go"
-	versionTemplate string = `package main
+	versionTemplate string = `//lint:file-ignore U1000 Ignore all unused code as it is generated
+package main
 
 const (
 	gitCommit      = "{{if .Commit}}{{.Commit}}{{else}}NA{{end}}"
