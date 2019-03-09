@@ -9,6 +9,7 @@ import (
 	"text/template"
 
 	git "gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing"
 )
 
 const (
@@ -52,7 +53,7 @@ func main() {
 		log.Println("Could not get head")
 		return
 	}
-	infos.Branch = strings.Replace(string(head.Name()) , "refs/heads/", "", 1)
+	infos.Branch = strings.Replace(string(head.Name()), "refs/heads/", "", 1)
 	log.Printf("Branch: %s\n", infos.Branch)
 	// get logs
 	logs, err := repo.Log(&git.LogOptions{})
@@ -71,12 +72,17 @@ func main() {
 	log.Printf("Commit: %s\n", infos.Commit)
 	log.Printf("Short Commit: %s\n", infos.ShortCommit)
 	// get tags
-	tag, err := repo.TagObject(commit.Hash)
-	if err == nil {
-		infos.Tag = strings.Replace(tag.Name, "refs/tags/", "", 1)
-	} else {
-		log.Printf("Error getting tag: %s\n", err)
+	iter, err := repo.Tags()
+	if err != nil {
+		log.Printf("Could not get tags from repository '%s'\n", path)
 	}
+	err = iter.ForEach(func(r *plumbing.Reference) error {
+		if r.Hash().String() == infos.Commit {
+			infos.Tag = strings.Replace(string(r.Name()), "refs/tags/", "", 1)
+			return nil
+		}
+		return nil
+	})
 	log.Printf("Tag: %s\n", infos.Tag)
 	// get status
 	worktree, err := repo.Worktree()
