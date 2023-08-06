@@ -3,8 +3,10 @@ package main
 //go:generate git-version
 
 import (
+	"flag"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 
@@ -17,7 +19,7 @@ const (
 	originName      string = "origin"
 	versionFilename string = "./version.go"
 	versionTemplate string = `//lint:file-ignore U1000 Ignore all unused code as it is generated
-package main
+package {{.Package}}
 
 const (
 	gitCommit      = "{{if .Commit}}{{.Commit}}{{else}}NA{{end}}"
@@ -29,8 +31,9 @@ const (
 `
 )
 
-//GitInfo has the informations reported by git-verion
+// GitInfo has the informations reported by git-verion
 type GitInfo struct {
+	Package     string
 	Commit      string
 	ShortCommit string
 	Tag         string
@@ -39,26 +42,37 @@ type GitInfo struct {
 }
 
 func main() {
-	// check current repository
-	path := "./"
+	// argument parsing
+	var gitPath string
+	var outputFilePath string
+	var goPackage string
+
+	// declare arguments
+	flag.StringVar(&gitPath, "g", "./", "Git path. Defaults to the current directory")
+	flag.StringVar(&outputFilePath, "o", "./version.go", "Output file path. Directories will be created if they don't exist. Defauls to './version.go'")
+	flag.StringVar(&goPackage, "p", "main", "Package for the output. Defauls to 'main'")
+
+	// parse the arguments
+	flag.Parse()
+
 	// create the info object
-	infos := GitInfo{}
+	infos := GitInfo{Package: goPackage}
 	// open git repo
-	repo, err := git.PlainOpen(path)
+	repo, err := git.PlainOpen(gitPath)
 	if err != nil {
-		log.Printf("Could not open git repository '%s'\n", path)
+		log.Printf("Could not open git repository '%s'\n", gitPath)
 		return
 	}
 	// get logs from local
 	logs, err := repo.Log(&git.LogOptions{})
 	if err != nil {
-		log.Printf("Could not get logs from repository '%s'\n", path)
+		log.Printf("Could not get logs from repository '%s'\n", gitPath)
 		return
 	}
 	// get last commit from local
 	commit, err := logs.Next()
 	if err != nil {
-		log.Printf("Could not get last commit from repository '%s'\n", path)
+		log.Printf("Could not get last commit from repository '%s'\n", gitPath)
 		return
 	}
 	infos.Commit = commit.Hash.String()
@@ -84,9 +98,9 @@ func main() {
 	// get tags
 	iter, err := repo.Tags()
 	if err != nil {
-		log.Printf("Could not get tags from repository '%s'\n", path)
+		log.Printf("Could not get tags from repository '%s'\n", gitPath)
 	}
-	err = iter.ForEach(func(r *plumbing.Reference) error {
+	iter.ForEach(func(r *plumbing.Reference) error {
 		if r.Hash().String() == infos.Commit {
 			infos.Tag = strings.Replace(string(r.Name()), "refs/tags/", "", 1)
 			return nil
@@ -97,12 +111,12 @@ func main() {
 	// get status
 	worktree, err := repo.Worktree()
 	if err != nil {
-		log.Printf("Couldn't get the worktree from repository '%s'", path)
+		log.Printf("Couldn't get the worktree from repository '%s'", gitPath)
 		return
 	}
 	status, err := worktree.Status()
 	if err != nil {
-		log.Printf("Couldn't get the worktree from repository '%s'", path)
+		log.Printf("Couldn't get the worktree from repository '%s'", gitPath)
 		return
 	}
 	infos.Status = "clean"
@@ -111,15 +125,27 @@ func main() {
 	}
 	log.Printf("Status: %s\n", infos.Status)
 	// generate version.go file
-	t := template.New("version.go")
+	t := template.New(filepath.Base(outputFilePath))
 	_, err = t.Parse(versionTemplate)
 	if err != nil {
 		log.Printf("Could not parse template: %s", err)
 		return
 	}
+	// create outputdir if needed
+	err = os.MkdirAll(filepath.Dir(outputFilePath), 0777)
+	if err != nil && !os.IsExist(err) {
+		log.Printf("Could not create output directory: %s", err)
+		return
+	}
 	// create file
-	f, err := os.Create(versionFilename)
-	defer f.Close()
+	f, err := os.Create(outputFilePath)
+	defer func() {
+		err = f.Close()
+		if err != nil {
+			log.Printf("Could not close file %s: %s\n", outputFilePath, err)
+			return
+		}
+	}()
 	if err != nil {
 		log.Printf("Could not create file %s: %s\n", versionFilename, err)
 		return
