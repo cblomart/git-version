@@ -22,17 +22,18 @@ const (
 package {{.Package}}
 
 const (
-	gitCommit      = "{{if .Commit}}{{.Commit}}{{else}}NA{{end}}"
-	gitShortCommit = "{{if .ShortCommit}}{{.ShortCommit}}{{else}}NA{{end}}"
-	gitTag         = "{{if .Tag}}{{.Tag}}{{else}}NA{{end}}"
-	gitBranch      = "{{if .Branch}}{{.Branch}}{{else}}NA{{end}}"
-	gitStatus      = "{{if .Status}}{{.Status}}{{else}}NA{{end}}"
+	{{if .Expose}}G{{else}}g{{end}}itCommit      = "{{if .Commit}}{{.Commit}}{{else}}NA{{end}}"
+	{{if .Expose}}G{{else}}g{{end}}itShortCommit = "{{if .ShortCommit}}{{.ShortCommit}}{{else}}NA{{end}}"
+	{{if .Expose}}G{{else}}g{{end}}gitTag         = "{{if .Tag}}{{.Tag}}{{else}}NA{{end}}"
+	{{if .Expose}}G{{else}}g{{end}}gitBranch      = "{{if .Branch}}{{.Branch}}{{else}}NA{{end}}"
+	{{if .Expose}}G{{else}}g{{end}}gitStatus      = "{{if .Status}}{{.Status}}{{else}}NA{{end}}"
 )
 `
 )
 
 // GitInfo has the informations reported by git-verion
 type GitInfo struct {
+	Expose      bool
 	Package     string
 	Commit      string
 	ShortCommit string
@@ -46,17 +47,19 @@ func main() {
 	var gitPath string
 	var outputFilePath string
 	var goPackage string
+	var expose bool
 
 	// declare arguments
 	flag.StringVar(&gitPath, "g", "./", "Git path. Defaults to the current directory")
 	flag.StringVar(&outputFilePath, "o", "./version.go", "Output file path. Directories will be created if they don't exist. Defauls to './version.go'")
 	flag.StringVar(&goPackage, "p", "main", "Package for the output. Defauls to 'main'")
+	flag.BoolVar(&expose, "e", false, "Expose version globaly. Disabled by default")
 
 	// parse the arguments
 	flag.Parse()
 
 	// create the info object
-	infos := GitInfo{Package: goPackage}
+	infos := GitInfo{Package: goPackage, Expose: expose}
 	// open git repo
 	repo, err := git.PlainOpen(gitPath)
 	if err != nil {
