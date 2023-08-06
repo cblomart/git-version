@@ -1,4 +1,4 @@
-module cblomart/git-version
+module github.com/cblomart/git-version
 
 go 1.15
 
