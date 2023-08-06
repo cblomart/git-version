@@ -24,9 +24,9 @@ package {{.Package}}
 const (
 	{{if .Expose}}G{{else}}g{{end}}itCommit      = "{{if .Commit}}{{.Commit}}{{else}}NA{{end}}"
 	{{if .Expose}}G{{else}}g{{end}}itShortCommit = "{{if .ShortCommit}}{{.ShortCommit}}{{else}}NA{{end}}"
-	{{if .Expose}}G{{else}}g{{end}}gitTag         = "{{if .Tag}}{{.Tag}}{{else}}NA{{end}}"
-	{{if .Expose}}G{{else}}g{{end}}gitBranch      = "{{if .Branch}}{{.Branch}}{{else}}NA{{end}}"
-	{{if .Expose}}G{{else}}g{{end}}gitStatus      = "{{if .Status}}{{.Status}}{{else}}NA{{end}}"
+	{{if .Expose}}G{{else}}g{{end}}itTag         = "{{if .Tag}}{{.Tag}}{{else}}NA{{end}}"
+	{{if .Expose}}G{{else}}g{{end}}itBranch      = "{{if .Branch}}{{.Branch}}{{else}}NA{{end}}"
+	{{if .Expose}}G{{else}}g{{end}}itStatus      = "{{if .Status}}{{.Status}}{{else}}NA{{end}}"
 )
 `
 )
